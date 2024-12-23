@@ -7,22 +7,22 @@ import ROUTES from "@/constants/routes";
 import TagCard from "../cards/TagCard";
 
 const hotQuestions = [
-  { _id: 1, title: "How to create a custom hook in React?" },
-  { _id: 2, title: "What is the difference between == and === in JavaScript?" },
-  { _id: 3, title: "How to use React Router?" },
+  { _id: "1", title: "How to create a custom hook in React?" },
+  { _id: "2", title: "What is the difference between == and === in JavaScript?" },
+  { _id: "3", title: "How to use React Router?" },
   {
-    _id: 4,
+    _id: "4",
     title: "What is the difference between a function and an arrow function?",
   },
-  { _id: 5, title: "How to use the useState hook in React?" },
+  { _id: "5", title: "How to use the useState hook in React?" },
 ];
 
 const popularTags = [
-  { _id: 1, name: "react", questions: 100 },
-  { _id: 2, name: "javascript", questions: 200 },
-  { _id: 3, name: "typescript", questions: 150 },
-  { _id: 4, name: "nextjs", questions: 50 },
-  { _id: 5, name: "react-query", questions: 75 },
+  { _id: "1", name: "react", questions: 100 },
+  { _id: "2", name: "javascript", questions: 200 },
+  { _id: "3", name: "typescript", questions: 150 },
+  { _id: "4", name: "nextjs", questions: 50 },
+  { _id: "5", name: "react-query", questions: 75 },
 ];
 
 const RightSidebar = () => {
@@ -34,7 +34,7 @@ const RightSidebar = () => {
           {hotQuestions.map(({ _id, title }) => (
             <Link
               key={_id}
-              href={ROUTES.PROFILE(_id.toString())}
+              href={ROUTES.PROFILE(_id)}
               className="flex cursor-pointer items-center justify-between gap-7"
             >
               <p className="body-medium text-dark500_light700">{title}</p>
