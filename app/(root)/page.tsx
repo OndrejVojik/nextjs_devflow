@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import ROUTES from "@/constants/routes";
 import handleError from "@/lib/handlers/error";
 import { ValidationError } from "@/lib/http-errors";
+// import dbConnect from "@/lib/mongoose";
 
 const questions = [
   {
@@ -49,23 +50,24 @@ const questions = [
   },
 ];
 
-// const test = async () => {
-//   try {
-//     throw new ValidationError({
-//       title: ["Required"],
-//     tags: ["'js' is not a valid tag"],});
-//   } catch (error) {
-//     return handleError(error)
-//   }
-// };
+const test = async () => {
+  try {
+    // await dbConnect()
+    throw new ValidationError({
+      title: ["Required"],
+    tags: ["'js' is not a valid tag"],});
+  } catch (error) {
+    return handleError(error)
+  }
+};
 
 interface SearchParams {
   searchParams: Promise<{ [key: string]: string }>;
 }
 
 const Home = async ({ searchParams }: SearchParams) => {
-  // const result = await test();
-  // console.log(result)
+  const result = await test();
+  console.log(result)
 
   const { query = "", filter = "" } = await searchParams;
 
