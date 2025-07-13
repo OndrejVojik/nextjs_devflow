@@ -5,9 +5,8 @@ import HomeFilter from "@/components/filters/HomeFilter";
 import LocalSearch from "@/components/search/LocalSearch";
 import { Button } from "@/components/ui/button";
 import ROUTES from "@/constants/routes";
+import { api } from "@/lib/api";
 import handleError from "@/lib/handlers/error";
-import { ValidationError } from "@/lib/http-errors";
-// import dbConnect from "@/lib/mongoose";
 
 const questions = [
   {
@@ -22,7 +21,7 @@ const questions = [
       _id: "1",
       name: "John Doe",
       image:
-        "https://static.vecteezy.com/system/resources/thumbnails/024/183/525/small/avatar-of-a-man-portrait-of-a-young-guy-illustration-of-male-character-in-modern-color-style-vector.jpg",
+        "https://static.vecteezy.com/system/resources/previews/002/002/403/non_2x/man-with-beard-avatar-character-isolated-icon-free-vector.jpg",
     },
     upvotes: 10,
     answers: 5,
@@ -41,7 +40,7 @@ const questions = [
       _id: "1",
       name: "John Doe",
       image:
-        "https://static.vecteezy.com/system/resources/thumbnails/024/183/525/small/avatar-of-a-man-portrait-of-a-young-guy-illustration-of-male-character-in-modern-color-style-vector.jpg",
+        "https://static.vecteezy.com/system/resources/previews/002/002/403/non_2x/man-with-beard-avatar-character-isolated-icon-free-vector.jpg",
     },
     upvotes: 10,
     answers: 5,
@@ -52,12 +51,9 @@ const questions = [
 
 const test = async () => {
   try {
-    // await dbConnect()
-    throw new ValidationError({
-      title: ["Required"],
-    tags: ["'js' is not a valid tag"],});
+    return await api.users.getAll();
   } catch (error) {
-    return handleError(error)
+    return handleError(error);
   }
 };
 
@@ -66,15 +62,16 @@ interface SearchParams {
 }
 
 const Home = async ({ searchParams }: SearchParams) => {
-  const result = await test();
-  console.log(result)
+  const users = await test();
+
+  console.log(users);
 
   const { query = "", filter = "" } = await searchParams;
 
   const filteredQuestions = questions.filter((question) => {
     const matchesQuery = question.title
       .toLowerCase()
-      .includes(query?.toLowerCase());
+      .includes(query.toLowerCase());
     const matchesFilter = filter
       ? question.tags[0].name.toLowerCase() === filter.toLowerCase()
       : true;
@@ -105,7 +102,6 @@ const Home = async ({ searchParams }: SearchParams) => {
       <div className="mt-10 flex w-full flex-col gap-6">
         {filteredQuestions.map((question) => (
           <QuestionCard key={question._id} question={question} />
-          // <h1 key={question._id}>{question.title}</h1>
         ))}
       </div>
     </>
