@@ -7,10 +7,20 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "static.vecteezy.com",
-        port: ""
-      }
-    ]
-  }
+        port: "",
+      },
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+        port: "",
+      },
+      {
+        protocol: "https",
+        hostname: "avatars.githubusercontent.com",
+        port: "",
+      },
+    ],
+  },
 };
 
 export default nextConfig;
