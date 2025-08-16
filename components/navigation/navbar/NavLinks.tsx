@@ -22,6 +22,7 @@ const NavLinks = ({
     <>
       {sidebarLinks.map((item) => {
         const isActive =
+          pathname &&
           (item.route.length > 1 && pathname.startsWith(item.route)) ||
           pathname === item.route;
 
