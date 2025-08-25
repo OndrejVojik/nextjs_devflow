@@ -169,6 +169,7 @@ export async function editQuestion(
             id.equals(tag._id)
           )
       );
+      // tag: ITagDoc
     }
 
     if (newTagDocuments.length > 0) {
@@ -263,6 +264,7 @@ export async function getQuestions(
   }
 
   try {
+
     const totalQuestions = await Question.countDocuments(filterQuery);
 
     const questions = await Question.find(filterQuery)
