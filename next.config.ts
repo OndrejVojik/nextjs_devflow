@@ -21,6 +21,9 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  experimental: {
+    after: true, // Corrected experimental feature
+  },
 };
 
 export default nextConfig;
