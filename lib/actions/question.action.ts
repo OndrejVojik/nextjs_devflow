@@ -1,6 +1,6 @@
 "use server";
 
-import mongoose, { FilterQuery } from "mongoose";
+import mongoose, { Error, FilterQuery } from "mongoose";
 
 import Question, { IQuestionDoc } from "@/database/question.model";
 import TagQuestion from "@/database/tag-question.model";
@@ -169,7 +169,6 @@ export async function editQuestion(
             id.equals(tag._id)
           )
       );
-      // tag: ITagDoc
     }
 
     if (newTagDocuments.length > 0) {
@@ -204,7 +203,9 @@ export async function getQuestion(
   const { questionId } = validationResult.params!;
 
   try {
-    const question = await Question.findById(questionId).populate("tags");
+    const question = await Question.findById(questionId)
+      .populate("tags")
+      .populate("author", "_id name image");
 
     if (!question) {
       throw new Error("Question not found");
@@ -264,7 +265,6 @@ export async function getQuestions(
   }
 
   try {
-
     const totalQuestions = await Question.countDocuments(filterQuery);
 
     const questions = await Question.find(filterQuery)
