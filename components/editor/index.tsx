@@ -31,22 +31,21 @@ import "./dark-editor.css";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 import { basicDark } from "cm6-theme-basic-dark";
 import { useTheme } from "next-themes";
-import type { ForwardedRef } from "react";
+import { forwardRef, type ForwardedRef } from "react";
 
 interface Props {
   value: string;
   fieldChange: (value: string) => void;
-  editorRef: ForwardedRef<MDXEditorMethods> | null;
 }
 
-const Editor = ({ value, editorRef, fieldChange, ...props }: Props) => {
+const Editor = forwardRef<MDXEditorMethods, Props>(({ value, fieldChange, ...props }, ref) => {
   const { resolvedTheme } = useTheme();
   const theme = resolvedTheme === "dark" ? [basicDark] : [];
   return (
     <MDXEditor
       key={resolvedTheme}
       markdown={value}
-      ref={editorRef}
+      ref={ref}
       className="background-light800_dark200 light-border-2 markdown-editor dark-editor grid w-full border"
       onChange={fieldChange}
       plugins={[
@@ -122,6 +121,6 @@ const Editor = ({ value, editorRef, fieldChange, ...props }: Props) => {
       {...props}
     />
   );
-};
+});
 
 export default Editor;
