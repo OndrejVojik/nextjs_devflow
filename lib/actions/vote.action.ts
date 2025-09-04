@@ -1,14 +1,18 @@
 "use server";
 
 import mongoose, { ClientSession } from "mongoose";
+import { revalidatePath } from "next/cache";
 
+import ROUTES from "@/constants/routes";
 import { Answer, Question, Vote } from "@/database";
 
 import action from "../handlers/action";
 import handleError from "../handlers/error";
-import { CreateVoteSchema, HasVotedSchema, UpdateVoteCountSchema } from "../validations";
-import { revalidatePath } from "next/cache";
-import ROUTES from "@/constants/routes";
+import {
+  CreateVoteSchema,
+  HasVotedSchema,
+  UpdateVoteCountSchema,
+} from "../validations";
 
 export async function updateVoteCount(
   params: UpdateVoteCountParams,
@@ -62,7 +66,7 @@ export async function createVote(
   const { targetId, targetType, voteType } = validationResult.params!;
   const userId = validationResult.session?.user?.id;
 
-  if (!userId) handleError(new Error("Unauthorized")) as ErrorResponse;
+  if (!userId) return handleError(new Error("Unauthorized")) as ErrorResponse;
 
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -88,6 +92,10 @@ export async function createVote(
           existingVote._id,
           { voteType },
           { new: true, session }
+        );
+        await updateVoteCount(
+          { targetId, targetType, voteType: existingVote.voteType, change: -1 },
+          session
         );
         await updateVoteCount(
           { targetId, targetType, voteType, change: 1 },
