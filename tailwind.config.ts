@@ -1,4 +1,5 @@
 import typography from "@tailwindcss/typography";
+import { link } from "fs";
 import type { Config } from "tailwindcss";
 import tailwindcssAnimate from "tailwindcss-animate";
 
@@ -31,6 +32,9 @@ const config: Config = {
           "850": "#FDFDFD",
           "900": "#FFFFFF",
         },
+        link: {
+          "100": "#1DA1F2",
+        }
       },
       boxShadow: {
         "light-100":
