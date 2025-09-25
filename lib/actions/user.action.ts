@@ -1,11 +1,11 @@
 import { FilterQuery } from "mongoose";
 
-import { Tag } from "@/database";
+import { Answer, Question, Tag, User } from "@/database";
 
 import action from "../handlers/action";
 import handleError from "../handlers/error";
 import dbConnect from "../mongoose";
-import { PaginatedSearchParamsSchema } from "../validations";
+import { GetUserSchema, PaginatedSearchParamsSchema } from "../validations";
 
 export const getTags = async (
   params: PaginatedSearchParams
@@ -86,3 +86,42 @@ export const getTopTags = async (): Promise<ActionResponse<Tag[]>> => {
     return handleError(error) as ErrorResponse;
   }
 };
+
+export async function getUser(params: GetUserParams): Promise<
+  ActionResponse<{
+    user: typeof User;
+    totalQuestions: number;
+    totalAnswers: number;
+  }>
+> {
+  const validationResult = await action({
+    params,
+    schema: GetUserSchema,
+  });
+
+  if (validationResult instanceof Error) {
+    return handleError(validationResult) as ErrorResponse;
+  }
+
+  const { userId } = params;
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) throw new Error("User not found");
+
+    const totalQuestions = await Question.countDocuments({ author: userId });
+    const totalAnswers = await Answer.countDocuments({ author: userId });
+
+    return {
+      success: true,
+      data: {
+        user: JSON.parse(JSON.stringify(user)),
+        totalQuestions,
+        totalAnswers,
+      },
+    };
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
+  }
+}
