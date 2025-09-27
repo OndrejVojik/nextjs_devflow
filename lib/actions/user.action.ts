@@ -1,15 +1,16 @@
+"use server";
+
 import { FilterQuery } from "mongoose";
 
-import { Answer, Question, Tag, User } from "@/database";
+import { Answer, Question, User } from "@/database";
 
 import action from "../handlers/action";
 import handleError from "../handlers/error";
-import dbConnect from "../mongoose";
 import { GetUserSchema, PaginatedSearchParamsSchema } from "../validations";
 
-export const getTags = async (
+export async function getUsers(
   params: PaginatedSearchParams
-): Promise<ActionResponse<{ tags: Tag[]; isNext: boolean }>> => {
+): Promise<ActionResponse<{ users: User[]; isNext: boolean }>> {
   const validationResult = await action({
     params,
     schema: PaginatedSearchParamsSchema,
@@ -22,70 +23,55 @@ export const getTags = async (
   const { page = 1, pageSize = 10, query, filter } = params;
 
   const skip = (Number(page) - 1) * pageSize;
-  const limit = Number(pageSize);
+  const limit = pageSize;
 
-  const filterQuery: FilterQuery<typeof Tag> = {};
+  const filterQuery: FilterQuery<typeof User> = {};
 
   if (query) {
-    filterQuery.$or = [{ name: { $regex: query, $options: "i" } }];
+    filterQuery.$or = [
+      { name: { $regex: query, $options: "i" } },
+      { email: { $regex: query, $options: "i" } },
+    ];
   }
 
   let sortCriteria = {};
 
   switch (filter) {
-    case "popular":
-      sortCriteria = { questions: -1 };
-      break;
-    case "recent":
+    case "newest":
       sortCriteria = { createdAt: -1 };
       break;
     case "oldest":
       sortCriteria = { createdAt: 1 };
       break;
-    case "name":
-      sortCriteria = { name: 1 };
+    case "popular":
+      sortCriteria = { reputation: -1 };
       break;
     default:
-      sortCriteria = { questions: -1 };
+      sortCriteria = { createdAt: -1 };
       break;
   }
 
   try {
-    const totalTags = await Tag.countDocuments(filterQuery);
+    const totalUsers = await User.countDocuments(filterQuery);
 
-    const tags = await Tag.find(filterQuery)
+    const users = await User.find(filterQuery)
       .sort(sortCriteria)
       .skip(skip)
       .limit(limit);
 
-    const isNext = totalTags > skip + tags.length;
+    const isNext = totalUsers > skip + users.length;
 
     return {
       success: true,
       data: {
-        tags: JSON.parse(JSON.stringify(tags)),
+        users: JSON.parse(JSON.stringify(users)),
         isNext,
       },
     };
   } catch (error) {
     return handleError(error) as ErrorResponse;
   }
-};
-
-export const getTopTags = async (): Promise<ActionResponse<Tag[]>> => {
-  try {
-    await dbConnect();
-
-    const tags = await Tag.find().sort({ questions: -1 }).limit(5);
-
-    return {
-      success: true,
-      data: JSON.parse(JSON.stringify(tags)),
-    };
-  } catch (error) {
-    return handleError(error) as ErrorResponse;
-  }
-};
+}
 
 export async function getUser(params: GetUserParams): Promise<
   ActionResponse<{

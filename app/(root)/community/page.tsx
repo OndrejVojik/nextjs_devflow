@@ -52,6 +52,7 @@ const Community = async ({ searchParams }: RouteParams) => {
           </div>
         )}
       />
+
       <Pagination page={page} isNext={isNext || false} />
     </div>
   );
