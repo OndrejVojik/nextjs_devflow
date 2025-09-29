@@ -1,4 +1,5 @@
 import typography from "@tailwindcss/typography";
+
 import { link } from "fs";
 import type { Config } from "tailwindcss";
 import tailwindcssAnimate from "tailwindcss-animate";
