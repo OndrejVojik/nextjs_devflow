@@ -33,7 +33,7 @@ const config: Config = {
         },
         link: {
           "100": "#1DA1F2",
-        }
+        },
       },
       boxShadow: {
         "light-100":

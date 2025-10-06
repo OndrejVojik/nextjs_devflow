@@ -29,7 +29,7 @@ const Metric = ({
   const metricContent = (
     <>
       <Image
-        src={imgUrl}
+        src={imgUrl || "/icons/user.svg"}
         width={16}
         height={16}
         alt={alt}
