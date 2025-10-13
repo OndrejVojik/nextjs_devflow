@@ -87,7 +87,7 @@ const AnswerCard = ({
       {showReadMore && (
         <Link
           href={`/questions/${question}#answer-${_id}`}
-          className="body-semibold font-space-grotesk text-primary-500 relative z-10"
+          className="body-semibold relative z-10 font-space-grotesk text-primary-500"
         >
           <p className="mt-1">Read more...</p>
         </Link>

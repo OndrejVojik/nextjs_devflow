@@ -18,7 +18,7 @@ const filters = [
 const HomeFilter = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const filterParams = searchParams.get("filter");
+  const filterParams = searchParams?.get("filter");
   const [active, setActive] = useState(filterParams || "");
 
   const handleTypeClick = (filter: string) => {
@@ -26,14 +26,14 @@ const HomeFilter = () => {
     if (filter === active) {
       setActive("");
       newUrl = removeKeysFromUrlQuery({
-        params: searchParams.toString(),
+        params: searchParams?.toString() || "",
         keysToRemove: ["filter"],
       });
       router.push(newUrl, { scroll: false });
     } else {
       setActive(filter);
       newUrl = formUrlQuery({
-        params: searchParams.toString(),
+        params: searchParams?.toString() || "",
         key: "filter",
         value: filter.toLowerCase(),
       });
