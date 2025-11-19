@@ -26,7 +26,7 @@ const LocalSearch = ({
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const query = searchParams.get("query") || "";
+  const query = searchParams?.get("query") || "";
 
   const [searchQuery, setSearchQuery] = useState(query);
 
@@ -34,7 +34,7 @@ const LocalSearch = ({
     const delayDebounceFn = setTimeout(() => {
       if (searchQuery) {
         const newUrl = formUrlQuery({
-          params: searchParams.toString(),
+          params: searchParams?.toString() || "",
           key: "query",
           value: searchQuery,
         });
@@ -43,7 +43,7 @@ const LocalSearch = ({
       } else {
         if (pathname === route) {
           const newUrl = removeKeysFromUrlQuery({
-            params: searchParams.toString(),
+            params: searchParams?.toString() || "",
             keysToRemove: ["query"],
           });
 

@@ -2,10 +2,10 @@ interface SignInWithOAuthParams {
   provider: "github" | "google";
   providerAccountId: string;
   user: {
-    email: string;
     name: string;
-    image: string;
     username: string;
+    email: string;
+    image: string;
   };
 }
 
@@ -39,8 +39,8 @@ interface IncrementViewsParams {
 }
 
 interface CreateAnswerParams {
-  questionId: string;
   content: string;
+  questionId: string;
 }
 
 interface GetAnswersParams extends PaginatedSearchParams {
@@ -73,7 +73,7 @@ interface GetUserParams {
 }
 
 interface GetUserQuestionsParams
-  extends Omit<PaginatedSearchParams, "query" | "filter" | "sort"> {
+  extends Omit<PaginatedSearchParams, "query | filter | sort"> {
   userId: string;
 }
 
@@ -120,4 +120,22 @@ interface RecommendationParams {
   query?: string;
   skip: number;
   limit: number;
+}
+
+interface JobFilterParams {
+  query: string;
+  page: string;
+}
+
+interface UpdateUserParams {
+  name?: string;
+  username?: string;
+  email?: string;
+  image?: string;
+  password?: string;
+}
+
+interface GlobalSearchParams {
+  query: string;
+  type: string | null;
 }

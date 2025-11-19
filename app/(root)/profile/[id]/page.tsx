@@ -14,7 +14,7 @@ import ProfileLink from "@/components/user/ProfileLink";
 import Stats from "@/components/user/Stats";
 import UserAvatar from "@/components/UserAvatar";
 import { EMPTY_ANSWERS, EMPTY_QUESTION, EMPTY_TAGS } from "@/constants/states";
-import { getUser, getUserQuestions, getUsersAnswers, getUserStats, getUserTopTags } from "@/lib/actions/user.action";
+import { getUser, getUserQuestions, getUserAnswers, getUserStats, getUserTopTags } from "@/lib/actions/user.action";
 
 const Profile = async ({ params, searchParams }: RouteParams) => {
   // /12312313
@@ -54,7 +54,7 @@ const Profile = async ({ params, searchParams }: RouteParams) => {
     success: userAnswersSuccess,
     data: userAnswers,
     error: userAnswersError,
-  } = await getUsersAnswers({
+  } = await getUserAnswers({
     userId: id,
     page: Number(page) || 1,
     pageSize: Number(pageSize) || 10,
