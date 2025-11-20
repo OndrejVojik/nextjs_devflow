@@ -10,12 +10,17 @@ import dbConnect from "@/lib/mongoose";
 import { SignInWithOAuthSchema } from "@/lib/validations";
 
 export async function POST(request: Request) {
+  console.log("Incoming request to OAuth sign-in endpoint");
+
   const { provider, providerAccountId, user } = await request.json();
+  console.log("Request data:", { provider, providerAccountId, user });
 
   await dbConnect();
+  console.log("Database connection established");
 
   const session = await mongoose.startSession();
   session.startTransaction();
+  console.log("MongoDB session started");
 
   try {
     const validatedData = SignInWithOAuthSchema.safeParse({
@@ -23,9 +28,15 @@ export async function POST(request: Request) {
       providerAccountId,
       user,
     });
+    console.log("Validation result:", validatedData);
 
-    if (!validatedData.success)
+    if (!validatedData.success) {
+      console.error(
+        "Validation failed:",
+        validatedData.error.flatten().fieldErrors
+      );
       throw new ValidationError(validatedData.error.flatten().fieldErrors);
+    }
 
     const { name, username, email, image } = user;
 
@@ -34,14 +45,17 @@ export async function POST(request: Request) {
       strict: true,
       trim: true,
     });
+    console.log("Slugified username:", slugifiedUsername);
 
     let existingUser = await User.findOne({ email }).session(session);
+    console.log("Existing user:", existingUser);
 
     if (!existingUser) {
       [existingUser] = await User.create(
         [{ name, username: slugifiedUsername, email, image }],
         { session }
       );
+      console.log("New user created:", existingUser);
     } else {
       const updatedData: { name?: string; image?: string } = {};
 
@@ -53,6 +67,7 @@ export async function POST(request: Request) {
           { _id: existingUser._id },
           { $set: updatedData }
         ).session(session);
+        console.log("User updated with data:", updatedData);
       }
     }
 
@@ -61,6 +76,7 @@ export async function POST(request: Request) {
       provider,
       providerAccountId,
     }).session(session);
+    console.log("Existing account:", existingAccount);
 
     if (!existingAccount) {
       await Account.create(
@@ -75,15 +91,20 @@ export async function POST(request: Request) {
         ],
         { session }
       );
+      console.log("New account created for user");
     }
 
     await session.commitTransaction();
+    console.log("Transaction committed successfully");
 
     return NextResponse.json({ success: true });
   } catch (error: unknown) {
+    console.error("Error occurred during OAuth sign-in:", error);
     await session.abortTransaction();
+    console.log("Transaction aborted");
     return handleError(error, "api") as APIErrorResponse;
   } finally {
     session.endSession();
+    console.log("MongoDB session ended");
   }
 }
